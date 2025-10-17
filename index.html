@@ -270,16 +270,16 @@ const ProxBalanceLogo = ({ size = 32 }) => (
             document.documentElement.classList.toggle('dark');
           };
 
-          const formatCSTTime = (date) => {
-            return new Date(date).toLocaleString('en-US', {
-              timeZone: 'America/Chicago',
+          const formatLocalTimeWithTZ = (date) => {
+            return new Date(date).toLocaleString(undefined, {
               year: 'numeric',
               month: 'short',
               day: 'numeric',
               hour: '2-digit',
               minute: '2-digit',
               second: '2-digit',
-              hour12: true
+              hour12: true,
+              timeZoneName: 'short' // automatically adds local TZ abbreviation
             });
           };
 
@@ -839,12 +839,17 @@ const ProxBalanceLogo = ({ size = 32 }) => (
                     <div className="flex items-center gap-3 mb-4 text-xs text-gray-500 dark:text-gray-500">
                       <div className="flex items-center gap-1">
                         <Clock size={12} />
-                        <span>UI refreshed: <span className="font-semibold text-gray-700 dark:text-gray-300">{formatCSTTime(lastUpdate)} CST</span></span>
+                        <span>
+                          UI refreshed: <span className="font-semibold text-gray-700 dark:text-gray-300">{formatLocalTimeWithTZ(lastUpdate)}</span>
+                        </span>
                       </div>
+
                       {backendCollected && (
                         <div className="flex items-center gap-2">
                           <Server size={12} />
-                          <span>Data collected: <span className="font-semibold text-green-600 dark:text-green-400">{formatCSTTime(backendCollected)} CST</span></span>
+                          <span>
+                            Data collected: <span className="font-semibold text-green-600 dark:text-green-400">{formatLocalTimeWithTZ(backendCollected)}</span>
+                          </span>
                           <button
                             onClick={handleRefresh}
                             disabled={loading}
@@ -856,6 +861,7 @@ const ProxBalanceLogo = ({ size = 32 }) => (
                           </button>
                         </div>
                       )}
+
                       {config && (
                         <span className="text-gray-400 dark:text-gray-600 text-xs">
                           (Backend: {config.collection_interval_minutes}m, UI: {config.ui_refresh_interval_minutes}m)
